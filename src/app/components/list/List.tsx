@@ -25,9 +25,15 @@ const List = () => {
   useEffect(() => {
     if (!list.length) {
       // debugger
-      dispatch(getAllBooksAsync(10));
+      dispatch(getAllBooksAsync(0, 5));
     }
   }, []);
+
+  useEffect(() => {
+    page === 0
+      ? dispatch(getAllBooksAsync(0, 5))
+      : dispatch(getAllBooksAsync(5, 5));
+  }, [page]);
 
   return (
     <div className="container border w-100 p-5">
@@ -58,8 +64,44 @@ const List = () => {
               ))}
           </tbody>
         </table>
+        <nav className="my-4">
+          <ul className="pagination">
+            <li
+              className="page-item"
+              onClick={() => page === 1 && setPage(page - 1)}
+            >
+              <a className="page-link" href="#">
+                Previous
+              </a>
+            </li>
+            <li
+              className={`page-item ${page === 0 ? "active" : ""}`}
+              onClick={() => page === 1 && setPage(0)}
+            >
+              <a className="page-link" href="#">
+                1
+              </a>
+            </li>
+            <li
+              className={`page-item ${page === 1 ? "active" : ""}`}
+              onClick={() => page === 0 && setPage(1)}
+            >
+              <a className="page-link" href="#">
+                2
+              </a>
+            </li>
+            <li
+              className="page-item"
+              onClick={() => page === 0 && setPage(page + 1)}
+            >
+              <a className="page-link" href="#">
+                Next
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
-      <BookDetails id={showBook} setShowBook={setShowBook} />
+      <BookDetails id={showBook} close={() => setShowBook("")} />
     </div>
   );
 };

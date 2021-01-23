@@ -40,6 +40,7 @@ export const getAllBooksAsync = (offset?: number, count?: number): AppThunk => (
   dispatch: AppDispatch
 ) => {
   dispatch(setListLoader(true));
+  // debugger;
   return axios
     .get(`${DatabaseURL}/items`, {
       method: "get",
@@ -47,8 +48,8 @@ export const getAllBooksAsync = (offset?: number, count?: number): AppThunk => (
         "Content-Type": "application/json; charset=utf-8",
       },
       params: {
-        offset: 0,
-        count: 5,
+        offset,
+        count,
       },
     })
     .then(({ data = [] }) => {

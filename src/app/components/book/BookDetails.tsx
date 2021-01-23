@@ -15,11 +15,11 @@ interface IBook {
 
 interface Iprops {
     id: string,
-    setShowBook: ()=>{}
+    close: ()=>{}
 }
 
 
-const BookDetails = ({id, setShowBook}:Iprops) => {
+const BookDetails = ({id, close}:Iprops) => {
   const book = useSelector((state: RootState): IBookState => state.book.book);
   const dispatch = useDispatch();
 
@@ -29,7 +29,7 @@ const BookDetails = ({id, setShowBook}:Iprops) => {
 
   return (
     <SweetAlert
-    show={!id}
+    show={!!id}
     title={book && book.title}
     text={book && book.author}
     grow
