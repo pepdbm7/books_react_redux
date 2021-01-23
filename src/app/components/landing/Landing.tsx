@@ -1,13 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { loginAction, IAuthState } from "../../redux/authSlice";
 import { RootState } from "../../redux/store";
 
 const Landing = () => {
   const authState = useSelector((state: RootState): IAuthState => state.auth);
+  const isAuthorized = useSelector(
+    (state: RootState) => state.auth.isAuthorized
+  );
   const dispatch = useDispatch();
+
+  let history = useHistory();
+
   const [username, setUsername] = useState("usertest");
   const [password, setPassword] = useState("secret");
+
+  useEffect(() => {
+    if (isAuthorized) {
+      history.push("/books");
+    }
+  }, [isAuthorized]);
 
   return (
     <div className="d-flex justify-content-center align-items-center vw-100 vh-100 landing_page">

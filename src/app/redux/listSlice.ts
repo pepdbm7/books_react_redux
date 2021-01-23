@@ -1,75 +1,71 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AppThunk, RootState } from './store';
-import axios from "axios"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AppThunk, RootState, AppDispatch } from "./store";
+import axios from "axios";
 import { DatabaseURL } from "../App";
 
-
 interface ListState {
-  list: Array<object>,
-  listError: object
-  isLoadingList: boolean
+  list: Array<object>;
+  listError: object;
+  isLoadingList: boolean;
 }
 
 const initialState: ListState = {
   list: [],
   listError: {},
-  isLoadingList: true
+  isLoadingList: true,
 };
 
 interface GetListresponse {
-  list: Array<object>,
-  listError: object
+  list: Array<object>;
+  listError: object;
 }
 
-
 export const List = createSlice({
-  name: 'list',
+  name: "list",
   initialState,
   reducers: {
-    getAllBooks: (state, action: PayloadAction<GetListresponse>) => {
-      debugger
-        state.list = action.payload.list
-     state.listError = action.payload.listError
+    getAllBooks: (state: RootState, action: PayloadAction<GetListresponse>) => {
+      state.list = action.payload.list;
+      state.listError = action.payload.listError;
     },
-    setListLoader: (state, action: PayloadAction<boolean>) => {
-state.isLoadingList = action.payload
-    }
+    setListLoader: (state: RootState, action: PayloadAction<boolean>) => {
+      state.isLoadingList = action.payload;
+    },
   },
 });
 
-export const { getAllBooks, setListLoader} = List.actions;
+export const { getAllBooks, setListLoader } = List.actions;
 
-// The function below is called a thunk and allows us to perform async logic. It
-// can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
-// will call the thunk with the `dispatch` function as the first argument. Async
-// code can then be executed and other actions can be dispatched
-export const getAllBooksAsync = (amount: number): AppThunk => dispatch => {
-  dispatch(setListLoader(true))
-    return axios
+export const getAllBooksAsync = (offset?: number, count?: number): AppThunk => (
+  dispatch: AppDispatch
+) => {
+  dispatch(setListLoader(true));
+  return axios
     .get(`${DatabaseURL}/items`, {
       method: "get",
-       headers: {
+      headers: {
         "Content-Type": "application/json; charset=utf-8",
-       },
-       params: {
+      },
+      params: {
         offset: 0,
-        count: 5
+        count: 5,
       },
     })
-    .then(({ data= [] }) => {
-      dispatch(getAllBooks({list: data, listError: data.length ? {} : {text: "No books found"}}));
+    .then(({ data = [] }) => {
+      dispatch(
+        getAllBooks({
+          list: data,
+          listError: data.length ? {} : { text: "No books found" },
+        })
+      );
       dispatch(setListLoader(false));
     })
     .catch((err) => {
-      dispatch(getAllBooks({list: [], listError: {text: err.message}}));
+      dispatch(getAllBooks({ list: [], listError: { text: err.message } }));
       dispatch(setListLoader(false));
     });
-
 };
 
-// The function below is called a selector and allows us to select a value from
-// the state. Selectors can also be defined inline where they're used instead of
-// in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 export const selectList = (state: RootState) => state.list.list;
 
 export default List.reducer;

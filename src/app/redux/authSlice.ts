@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk, RootState } from "./store";
+import { AppThunk, RootState, AppDispatch } from "./store";
 
 interface IError {
   type: string;
@@ -27,24 +27,27 @@ export const Auth = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    login: (state, action: PayloadAction<IAuthState>) => {
+    login: (state: RootState, action: PayloadAction<IAuthState>) => {
       state.isAuthorized = action.payload.isAuthorized;
       state.loginError = action.payload.loginError;
     },
-    setLoginLoader: (state, action: PayloadAction<boolean>) => {
+    setLoginLoader: (state: RootState, action: PayloadAction<boolean>) => {
       state.isLoadingLogin = action.payload;
+    },
+    logout: (state: RootState) => {
+      state.isAuthorized = false;
     },
   },
 });
 
-export const { login, setLoginLoader } = Auth.actions;
+export const { login, setLoginLoader, logout } = Auth.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
 // will call the thunk with the `dispatch` function as the first argument. Async
 // code can then be executed and other actions can be dispatched
 export const loginAction = (credentials: ILoginCredentials): AppThunk => (
-  dispatch
+  dispatch: AppDispatch
 ) => {
   dispatch(setLoginLoader(true));
 
