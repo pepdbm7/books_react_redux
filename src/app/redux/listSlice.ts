@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AppThunk, RootState } from '../../app/store';
+import { AppThunk, RootState } from './store';
 import axios from "axios"
-import { DatabaseURL } from "../../App";
+import { DatabaseURL } from "../App";
 
 
 interface ListState {
@@ -10,16 +10,17 @@ interface ListState {
   isLoadingList: boolean
 }
 
-interface GetListresponse {
-  list: Array<object>,
-  listError: object
-}
-
 const initialState: ListState = {
   list: [],
   listError: {},
   isLoadingList: true
 };
+
+interface GetListresponse {
+  list: Array<object>,
+  listError: object
+}
+
 
 export const List = createSlice({
   name: 'list',
@@ -45,11 +46,15 @@ export const { getAllBooks, setListLoader} = List.actions;
 export const getAllBooksAsync = (amount: number): AppThunk => dispatch => {
   dispatch(setListLoader(true))
     return axios
-    .post(`${DatabaseURL}/items`, {
-      method: "POST",
-      // headers: {
-      //   "access-token": token,
-      // },
+    .get(`${DatabaseURL}/items`, {
+      method: "get",
+       headers: {
+        "Content-Type": "application/json; charset=utf-8",
+       },
+       params: {
+        offset: 0,
+        count: 5
+      },
     })
     .then(({ data= [] }) => {
       dispatch(getAllBooks({list: data, listError: data.length ? {} : {text: "No books found"}}));

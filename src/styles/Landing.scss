@@ -1,0 +1,29 @@
+.landing_page {
+  background-image: url(../assets/books.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  h2 {
+    font-size: 45px;
+  }
+  .card {
+    max-width: 400px;
+
+    @media (max-width: 400px) {
+      width: 90%;
+    }
+    @media (max-width: 900px) {
+      width: 80%;
+    }
+
+    button {
+      width: 66px;
+
+      .spinner-border {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+}
