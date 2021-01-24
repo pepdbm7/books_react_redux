@@ -3,9 +3,10 @@ import storage from 'redux-persist/lib/storage'
 import { persistReducer } from 'redux-persist'
 import {combineReducers} from "redux";
 //reducers:
-import listReducer from './listSlice';
+
 import authReducer from './authSlice';
 import bookReducer from "./bookSlice"
+import listReducer from './listSlice';
 
 
 const reducers = combineReducers({
@@ -17,10 +18,10 @@ const reducers = combineReducers({
  const persistConfig = {
      key: 'root',
      storage,
-     whitelist:["auth", "books"]
+     whitelist:["auth", "list"]
  };
 
-const persistedReducer = persistReducer(persistConfig, reducers);
+const persistedReducer: any = persistReducer(persistConfig, reducers);
 
 export const store = configureStore({
   reducer: persistedReducer,

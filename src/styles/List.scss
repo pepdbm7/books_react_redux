@@ -1,0 +1,55 @@
+@mixin background($color1, $color2) {
+  background: $color1;
+  background: -moz-linear-gradient(top, $color1 0%, $color2 100%);
+  background: -webkit-gradient(
+    left top,
+    left bottom,
+    color-stop(0%, $color1),
+    color-stop(100%, $color2)
+  );
+  background: -webkit-linear-gradient(top, $color1 0%, $color2 100%);
+  background: -o-linear-gradient(top, $color1 0%, $color2 100%);
+  background: -ms-linear-gradient(top, $color1 0%, $color2 100%);
+  background: linear-gradient(to bottom, $color1 0%, $color2 100%);
+}
+
+.list_page {
+  min-height: 100vh;
+  width: 100vw;
+  @include background(rgb(145, 208, 250), rgb(252, 244, 219));
+
+  button {
+    transition: 0.4s all ease-in;
+  }
+
+  .table_container {
+    height: 500px;
+    table {
+      &.table-bordered {
+        border: 1px solid hsl(210, 65%, 36%);
+      }
+      .table_row {
+        cursor: pointer;
+        transition: 0.4s all ease-in;
+
+        &:hover {
+          background-color: hsl(0, 67%, 92%) !important;
+        }
+      }
+    }
+  }
+
+  .pagination {
+    li {
+      cursor: pointer;
+      z-index: 1;
+      span {
+        transition: 0.4s all ease-in;
+      }
+    }
+    .disabled {
+      cursor: auto;
+      pointer-events: none;
+    }
+  }
+}

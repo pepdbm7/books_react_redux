@@ -2,26 +2,40 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk, RootState, AppDispatch } from "./store";
 import axios from "axios";
 import { DatabaseURL } from "../App";
+import BookDetails from '../components/book/BookDetails';
 
+interface IError {
+  type: string;
+  text: string;
+}
 
-interface IBookDetails {
+export interface IBookDetails {
   author: string,
   id:string,
   image: string,
   link: string,
   price: number,
-  title:string
+  title:string,
+  description?:string
 }
 
-interface IBookState {
-  bookDetails: IBookDetails | object;
-  bookError: object;
+export interface IBookState {
+  bookDetails: IBookDetails;
+  bookError: IError;
   isLoadingList: boolean;
 }
+const initialBookDetails: IBookDetails = {
+  author: "",
+  id:"",
+  image: "",
+  link: "",
+  price: 0,
+  title:""
+} 
 
 const initialState: IBookState = {
-  bookDetails: {},
-  bookError: {},
+  bookDetails: initialBookDetails,
+  bookError: {type: "", text: ""},
   isLoadingList: true,
 };
 
@@ -37,14 +51,19 @@ export const Book = createSlice({
     setBookDetails: (state: RootState, action: PayloadAction<GetDetailsresponse>) => {
       state.bookDetails = action.payload.bookDetails;
       state.bookError = action.payload.bookError;
+      
     },
     setDetailsLoader: (state: RootState, action: PayloadAction<boolean>) => {
       state.isLoadingList = action.payload;
     },
+    clearBookDetails: (state: RootState) => {
+      state.BookDetails = initialBookDetails;
+      state.bookError= {type: "", text: ""};
+    }
   },
 });
 
-const {setBookDetails, setDetailsLoader} = Book.actions
+export const {setBookDetails, setDetailsLoader, clearBookDetails} = Book.actions
 
 export const getBookDetails = (id: string): AppThunk => (
   dispatch: AppDispatch
@@ -58,20 +77,25 @@ export const getBookDetails = (id: string): AppThunk => (
       },
     })
     .then(({ data = {} }) => {
-      // debugger;
-
+      setTimeout(() => {
+         dispatch(setDetailsLoader(false));
       dispatch(
         setBookDetails({
           bookDetails: data,
           bookError: data.id ? {} : { text: "No details found" },
         })
       );
-      dispatch(setDetailsLoader(false));
+      }, 800);
+      //settimeout just to show that there is a loader implemented
+     
+      
     })
     .catch((err) => {
-      dispatch(setBookDetails({ bookDetails: [], bookError: { text: err.message } }));
       dispatch(setDetailsLoader(false));
+      dispatch(setBookDetails({ bookDetails: [], bookError: { text: err.message } }));
     });
 };
+
+export const clearBookDetailsAction = () => ( dispatch: AppDispatch) => dispatch(clearBookDetails())
 
 export default Book.reducer;

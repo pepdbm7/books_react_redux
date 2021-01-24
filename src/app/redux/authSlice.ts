@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { clearListAction } from "./listSlice";
 import { AppThunk, RootState, AppDispatch } from "./store";
 
 interface IError {
@@ -23,7 +24,7 @@ export interface ILoginCredentials {
   password: string;
 }
 
-export const Auth = createSlice({
+export const Auth: any = createSlice({
   name: "auth",
   initialState,
   reducers: {
@@ -62,6 +63,7 @@ export const loginAction = (credentials: ILoginCredentials): AppThunk => (
 
       dispatch(setLoginLoader(false));
     }, 1500);
+    //settimeout just to show that there is a loader implemented
   } else {
     setTimeout(() => {
       dispatch(
@@ -73,6 +75,11 @@ export const loginAction = (credentials: ILoginCredentials): AppThunk => (
       dispatch(setLoginLoader(false));
     }, 500);
   }
+};
+
+export const logoutAction = () => (dispatch: AppDispatch) => {
+  dispatch(clearListAction());
+  dispatch(logout());
 };
 
 // The function below is called a selector and allows us to select a value from

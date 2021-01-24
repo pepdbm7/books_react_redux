@@ -2,9 +2,18 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk, RootState, AppDispatch } from "./store";
 import axios from "axios";
 import { DatabaseURL } from "../App";
+import { IBookDetails } from "./bookSlice";
 
+export interface IListItem {
+  id: string;
+  link: string;
+  price: number;
+  title: string;
+}
+
+export type IList = Array<IListItem | IBookDetails> | [];
 interface ListState {
-  list: Array<object>;
+  list: IList;
   listError: object;
   isLoadingList: boolean;
 }
@@ -20,6 +29,7 @@ interface GetListresponse {
   listError: object;
 }
 
+// @ts-ignore
 export const List = createSlice({
   name: "list",
   initialState,
@@ -31,16 +41,22 @@ export const List = createSlice({
     setListLoader: (state: RootState, action: PayloadAction<boolean>) => {
       state.isLoadingList = action.payload;
     },
+    addBook: (state: RootState, action: PayloadAction<IBookDetails>) => {
+      state.list = [action.payload.newBook, ...state.list];
+    },
+    clearList: (state: RootState) => {
+      state.list = [];
+    },
   },
 });
 
-export const { getAllBooks, setListLoader } = List.actions;
+export const { getAllBooks, setListLoader, addBook, clearList } = List.actions;
 
 export const getAllBooksAsync = (offset?: number, count?: number): AppThunk => (
   dispatch: AppDispatch
 ) => {
   dispatch(setListLoader(true));
-  // debugger;
+  // ;
   return axios
     .get(`${DatabaseURL}/items`, {
       method: "get",
@@ -67,6 +83,21 @@ export const getAllBooksAsync = (offset?: number, count?: number): AppThunk => (
     });
 };
 
+export const addBookAction = (newBook: IBookDetails) => (
+  dispatch: AppDispatch
+) => {
+  dispatch(setListLoader(true));
+  setTimeout(() => {
+    dispatch(addBook(newBook));
+    dispatch(setListLoader(false));
+  }, 800);
+};
+
+export const clearListAction = () => (dispatch: AppDispatch) =>
+  dispatch(clearList());
+
 export const selectList = (state: RootState) => state.list.list;
+
+export const selectListLoader = (state: RootState) => state.list.isLoadingList;
 
 export default List.reducer;
