@@ -16,12 +16,14 @@ interface ListState {
   list: IList;
   listError: object;
   isLoadingList: boolean;
+  removedMessage: string;
 }
 
 const initialState: ListState = {
   list: [],
   listError: {},
   isLoadingList: true,
+  removedMessage: "",
 };
 
 interface GetListresponse {
@@ -42,7 +44,22 @@ export const List = createSlice({
       state.isLoadingList = action.payload;
     },
     addBook: (state: RootState, action: PayloadAction<IBookDetails>) => {
-      state.list = [action.payload.newBook, ...state.list];
+      state.list = [action.payload, ...state.list];
+    },
+    removeBook: (state: RootState, action: PayloadAction<string>) => {
+      if (action.payload) {
+        const bookToRemove = state.list.find(
+          (book: IBookDetails) => book.id === action.payload
+        );
+        const filteredBooks = state.list.filter(
+          (book: IBookDetails) => book.id !== action.payload
+        );
+
+        state.list = filteredBooks;
+        state.removedMessage = `The book '${bookToRemove.title}' has been removed`;
+      } else {
+        state.removedMessage = "";
+      }
     },
     clearList: (state: RootState) => {
       state.list = [];
@@ -50,7 +67,13 @@ export const List = createSlice({
   },
 });
 
-export const { getAllBooks, setListLoader, addBook, clearList } = List.actions;
+export const {
+  getAllBooks,
+  setListLoader,
+  addBook,
+  removeBook,
+  clearList,
+} = List.actions;
 
 export const getAllBooksAsync = (offset?: number, count?: number): AppThunk => (
   dispatch: AppDispatch
@@ -72,7 +95,9 @@ export const getAllBooksAsync = (offset?: number, count?: number): AppThunk => (
       dispatch(
         getAllBooks({
           list: data,
-          listError: data.length ? {} : { text: "No books found" },
+          listError: data.length
+            ? {}
+            : { type: "danger", text: "No books found" },
         })
       );
       dispatch(setListLoader(false));
@@ -89,8 +114,14 @@ export const addBookAction = (newBook: IBookDetails) => (
   dispatch(setListLoader(true));
   setTimeout(() => {
     dispatch(addBook(newBook));
-    dispatch(setListLoader(false));
-  }, 800);
+  }, 400);
+};
+
+export const removeBookAction = (id: string) => (dispatch: AppDispatch) => {
+  dispatch(removeBook(id));
+  setTimeout(() => {
+    dispatch(removeBook(""));
+  }, 3000);
 };
 
 export const clearListAction = () => (dispatch: AppDispatch) =>
@@ -99,5 +130,10 @@ export const clearListAction = () => (dispatch: AppDispatch) =>
 export const selectList = (state: RootState) => state.list.list;
 
 export const selectListLoader = (state: RootState) => state.list.isLoadingList;
+
+export const selectListError = (state: RootState) => state.list.listError;
+
+export const selectRemovedMessage = (state: RootState) =>
+  state.list.removedMessage;
 
 export default List.reducer;

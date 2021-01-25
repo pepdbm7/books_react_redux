@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addBookAction } from "../../redux/listSlice";
+import { addBookAction, getAllBooksAsync } from "../../redux/listSlice";
 import { IBookDetails } from "../../redux/bookSlice";
+import { v4 as uuidv4 } from "uuid";
 
 interface Iprops {
   show: boolean;
@@ -9,9 +10,11 @@ interface Iprops {
 }
 
 const CreateModal = ({ show, close }: Iprops) => {
+  const dispatch = useDispatch();
+
   const [newBook, setNewBook] = useState<IBookDetails>({
     author: "",
-    id: "",
+    id: uuidv4(),
     image: "",
     link: "",
     price: 0,
@@ -19,63 +22,60 @@ const CreateModal = ({ show, close }: Iprops) => {
     description: "",
   });
 
-  const dispatch = useDispatch();
-
   return (
-    <div className={`book_details_container p-4 ${show ? "show" : "d-none"}`}>
+    <div className={`add_book_container p-4 ${show ? "show" : "d-none"}`}>
       <div className={`modal_bg`} onClick={() => close()} />
-      <div className="modal_card rounded shadow">
-        <h3 className="text-muted mb-4">Create a new book</h3>
+      <div className="modal_card rounded shadow d-flex flex-column p-5">
+        <button className="rounded close" onClick={() => close()}>
+          X
+        </button>
+        <h3 className="text-muted mb-5">Create a new book</h3>
         <div className="d-flex flex-column form-group">
           <label htmlFor="title">Title</label>
           <input
-            className="w-100 mb-3"
+            className="form-control form-control-solid mb-3"
             type="text"
-            required
-            onBlur={(e) => {
-              if (e.target.value)
-                setNewBook({ ...newBook, title: e.target.value });
+            autoFocus
+            onChange={(e) => {
+              setNewBook({ ...newBook, title: e.target.value });
             }}
           />
           <label htmlFor="title">Price</label>
           <input
-            className="w-100 mb-3"
+            className="form-control form-control-solid mb-3"
             type="number"
-            required
-            onBlur={(e) => {
-              if (e.target.value)
-                setNewBook({ ...newBook, price: Number(e.target.value) });
+            onChange={(e) => {
+              setNewBook({ ...newBook, price: Number(e.target.value) });
             }}
           />
           <label htmlFor="title">Author</label>
           <input
-            className="w-100 mb-3"
+            className="form-control form-control-solid mb-3"
             type="text"
-            required
-            onBlur={(e) => {
-              if (e.target.value)
-                setNewBook({ ...newBook, author: e.target.value });
+            onChange={(e) => {
+              setNewBook({ ...newBook, author: e.target.value });
             }}
           />
           <label htmlFor="title">Description</label>
-          <input
-            className="w-100 mb-3"
-            type="text"
-            required
-            onBlur={(e) => {
-              if (e.target.value)
-                setNewBook({ ...newBook, description: e.target.value });
+          <textarea
+            className="form-control form-control-solid mb-5"
+            onChange={(e) => {
+              setNewBook({ ...newBook, description: e.target.value });
             }}
           />
           <button
-            className="btn btn-success mx-auto"
+            className="btn btn-success w-100"
             disabled={
               !newBook.title ||
               !newBook.price ||
               !newBook.author ||
               !newBook.description
             }
-            onClick={() => dispatch(addBookAction(newBook))}
+            onClick={() => {
+              dispatch(addBookAction(newBook));
+              dispatch(getAllBooksAsync());
+              close();
+            }}
           >
             Confirm
           </button>

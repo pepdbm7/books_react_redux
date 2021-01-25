@@ -1,17 +1,20 @@
-.book_details_container {
+.book_details_container,
+.add_book_container {
   width: 100vw;
   min-height: 100vh;
   position: absolute;
   top: 0;
   left: 0;
-  opacity: 0;
+  // opacity: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: 0.8s all ease-in-out;
 
-  &.show {
-    opacity: 1;
-  }
+  // &.show {
+  //   transition: 0.8s all ease-in-out;
+  //   opacity: 1;
+  // }
 
   .modal_bg {
     width: inherit;
@@ -24,7 +27,6 @@
     left: 0;
   }
   .modal_card {
-    transition: 1s all ease-in-out;
     display: flex;
     justify-content: center;
     align-items: center;

@@ -18,8 +18,26 @@
   width: 100vw;
   @include background(rgb(145, 208, 250), rgb(252, 244, 219));
 
-  button {
+  .spinner_container,
+  .error_container {
+    height: 50vh !important;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .deleted_message {
     transition: 0.4s all ease-in;
+    width: fit-content;
+
+    &.visible {
+      opacity: 1;
+    }
+
+    &.invisible {
+      opacity: 0;
+    }
   }
 
   .table_container {
@@ -31,6 +49,9 @@
       .table_row {
         cursor: pointer;
         transition: 0.4s all ease-in;
+        &.removing {
+          background-color: red;
+        }
 
         &:hover {
           background-color: hsl(0, 67%, 92%) !important;
