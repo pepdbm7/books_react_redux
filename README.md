@@ -1,3 +1,6 @@
+This project is a responsive app that allows the user to login, see a books list as a table with dynamic pagination, see details of each book, create and add a new book, remove a book by dragging it, with a confirmation modal. It has persistant-store so after refreshing the page it keeps the store, and only does the api call the first time when we don't have the list in the store yet. Controlled routes with error page. Technologies: React, Redux, Typescript, Sass.
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
 
 ## Available Scripts
